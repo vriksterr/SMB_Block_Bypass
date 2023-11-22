@@ -17,6 +17,7 @@ int main() {
     const char* command = "netsh interface portproxy add v4tov4 listenaddress=127.0.0.1 listenport=445 connectaddress=122.176.54.41 connectport=6969";
     // Command to delete: netsh interface portproxy delete v4tov4 listenaddress=127.0.0.1 listenport=445
     // See all the netsh forwards: netsh interface portproxy show all
+    // Reset netsh interface portproxy: netsh interface portproxy reset
 
     // Execute the command with administrator privileges
     HINSTANCE hInstance = ShellExecuteA(NULL, "runas", "cmd.exe", ("/C " + std::string(command)).c_str(), NULL, SW_HIDE);
@@ -39,7 +40,33 @@ int main() {
         std::cout << "\x1b[0m";
 
         // Display a message
-        std::cout << "Windows Restart is Required for ISP Unblock to Take Effect Press\x1b[38;5;208m\x1b[5m Enter\x1b[0m to restart Windows..." << std::endl;
+        // ANSI escape codes for text color and blinking
+        const char* colorAndBlink = "\x1b[38;5;208m\x1b[5m";
+        // ANSI escape code to reset text attributes
+        const char* resetAttributes = "\x1b[0m";
+
+        // Box drawing characters
+        char horizontalLine = '*';
+        char verticalLine = '*';
+        char corner = '*';
+
+        // Text to be displayed
+        std::string message = "Windows Restart is Required for ISP Unblock to Take Effect Press\x1b[38;5;208m\x1b[5m Enter\x1b[0m to restart Windows...";
+
+        // Calculate the width of the box
+        int boxWidth = message.length() - 15;  // Add 4 for padding on both sides
+
+        // Print the top of the box
+        std::cout << corner << std::string(boxWidth, horizontalLine) << corner << std::endl;
+
+        // Print the text inside the box
+        std::cout << verticalLine << "  " << message << "  " << verticalLine << std::endl;
+
+        // Print the bottom of the box
+        std::cout << corner << std::string(boxWidth, horizontalLine) << corner << std::endl;
+
+        // Reset text attributes
+        std::cout << resetAttributes;
 
         // Wait for the user to press Enter
         std::cin.get();
