@@ -1,8 +1,9 @@
-//g++ -o your_program.exe your_program.cpp -static-libgcc -static-libstdc++ -static -lpthread
+//g++ -o your_program.exe your_program.cpp -static-libgcc -static-libstdc++ -static -lpthread -lws2_32
 
 #include <iostream>
 #include <cstdlib>
 #include <windows.h>
+#include <winsock2.h>
 #include <shellapi.h>
 #include <string>
 #define SE_SHUTDOWN_NAME L"SeShutdownPrivilege"
@@ -54,13 +55,13 @@ int isp_unblock_bypass(){
         std::cout << "\x1b[92m";
         // Command executed successfully
         std::cout << "   /$$$$$$  /$$   /$$  /$$$$$$   /$$$$$$  /$$$$$$$$  /$$$$$$   /$$$$$$ \n";
-        std::cout << " /$$__  $$| $$  | $$ /$$__  $$ /$$__  $$| $$_____/ /$$__  $$ /$$__  $$\n";
-        std::cout << "| $$  \__/| $$  | $$| $$  \__/| $$  \__/| $$      | $$  \__/| $$  \__/\n";
-        std::cout << "|  $$$$$$ | $$  | $$| $$      | $$      | $$$$$   |  $$$$$$ |  $$$$$$ \n";
-        std::cout << " \____  $$| $$  | $$| $$      | $$      | $$__/    \____  $$ \____  $$\n";
-        std::cout << " /$$  \ $$| $$  | $$| $$    $$| $$    $$| $$       /$$  \ $$ /$$  \ $$\n";
-        std::cout << "|  $$$$$$/|  $$$$$$/|  $$$$$$/|  $$$$$$/| $$$$$$$$|  $$$$$$/|  $$$$$$/\n";
-        std::cout << " \______/  \______/  \______/  \______/ |________/ \______/  \______/ \n";
+        std::cout << " /$$__  $$| $$  | $$ /$$__  $$ /$$__  $$| $$_____/ /$$__  $$ /$$__  $$ \n";
+        std::cout << "| $$  \__/| $$  | $$| $$  \__/| $$  \__/| $$      | $$  \__/| $$  \__/ \n";
+        std::cout << "|  $$$$$$ | $$  | $$| $$      | $$      | $$$$$   |  $$$$$$ |  $$$$$$  \n";
+        std::cout << " \____  $$| $$  | $$| $$      | $$      | $$__/    \____  $$ \____  $$ \n";
+        std::cout << " /$$  \ $$| $$  | $$| $$    $$| $$    $$| $$       /$$  \ $$ /$$  \ $$ \n";
+        std::cout << "|  $$$$$$/|  $$$$$$/|  $$$$$$/|  $$$$$$/| $$$$$$$$|  $$$$$$/|  $$$$$$/ \n";
+        std::cout << " \______/  \______/  \______/  \______/ |________/ \______/  \______/  \n";
         // ANSI escape code for resetting text color to default
         std::cout << "\x1b[0m";
 
@@ -146,32 +147,44 @@ int drive_mount(){
 }
 
 int isp_block_check(){
-    // Run the external command and capture its output
-    FILE* pipe = popen("Test-NetConnection -ComputerName 10.10.10.24 -Port 445 2>&1", "r");
-
-    if (!pipe) {
-        std::cerr << "Error: Unable to run command." << std::endl;
-        return -1;
+    // Initialize Winsock
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        std::cerr << "Failed to initialize Winsock" << std::endl;
+        return 1;
     }
 
-    char buffer[128];
-    std::string result = "";
+    // Get user input for IP address and port
+    // std::cout << "Enter IP address: ";
+    std::string ipAddress = "122.176.54.41";
+    // std::cin >> ipAddress;
 
-    // Read the command output
-    while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-        result += buffer;
+    // std::cout << "Enter port number: ";
+    int port=445;
+    // std::cin >> port;
+
+    // Create socket
+    SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock == INVALID_SOCKET) {
+        std::cerr << "Socket creation failed" << std::endl;
+        WSACleanup();
+        return 1;
     }
 
-    // Close the pipe
-    pclose(pipe);
+    // Set up sockaddr_in structure
+    sockaddr_in server;
+    server.sin_family = AF_INET;
+    server.sin_port = htons(port);
+    server.sin_addr.s_addr = inet_addr(ipAddress.c_str());
 
-    // Check if the TCP test succeeded
-    if (result.find("TCP Test Succeeded: True") != std::string::npos) {
-        std::cout << "TRUE" << std::endl;
+    // Connect to server
+    if (connect(sock, (struct sockaddr*) &server, sizeof(server)) == SOCKET_ERROR) {
+        std::cerr << "Port is closed" << std::endl;
+        isp_unblock_bypass();
         drive_mount();
     } else {
-        std::cout << "FALSE" << std::endl;
-        isp_unblock_bypass();
+        std::cout << "Port is open" << std::endl;
+        closesocket(sock);
         drive_mount();
     }
 }
