@@ -1,5 +1,5 @@
 //g++ -o your_program.exe your_program.cpp -static-libgcc -static-libstdc++ -static -lpthread -lws2_32
-//testing the code
+
 #include <iostream>
 #include <cstdlib>
 #include <windows.h>
