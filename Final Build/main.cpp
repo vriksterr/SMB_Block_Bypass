@@ -8,6 +8,18 @@
 #include <string>
 #define SE_SHUTDOWN_NAME L"SeShutdownPrivilege"
 
+//Clears the Output of the Screen
+void clear_screen(char fill = ' ') { 
+    COORD tl = {0,0};
+    CONSOLE_SCREEN_BUFFER_INFO s;
+    HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);   
+    GetConsoleScreenBufferInfo(console, &s);
+    DWORD written, cells = s.dwSize.X * s.dwSize.Y;
+    FillConsoleOutputCharacter(console, fill, cells, tl, &written);
+    FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
+    SetConsoleCursorPosition(console, tl);
+}
+
 int restart_windows(){
         // Restart Windows
         // Requesting the necessary privileges
@@ -123,7 +135,7 @@ int reset_everthing(){
 
 int drive_mount(){
     // Get the drive letter from the user
-    std::cout << "Enter the drive letter: ";
+    std::cout << "Enter the drive letter you want to use for opDrive(Choose unique letter you are not currently using): ";
     char driveLetter;
     std::cin >> driveLetter;
 
@@ -140,10 +152,35 @@ int drive_mount(){
 
     // Check if the command was executed successfully
     if (result == 0) {
-        std::cout << "Command executed successfully." << std::endl;
+        std::cout << "Drive Mount successful." << std::endl << std::endl;
+        std::cout << "Going Back to Main Menu..";
+                Sleep(1000);
+        std::cout << "..";
+                Sleep(1000);
+        std::cout << "..";
+                Sleep(1000);
+        std::cout << "..";
+                Sleep(1000);
+        std::cout << "..";
+                Sleep(1000);
+        std::cout << "..";
+        
+
     } else {
-        std::cerr << "Error executing the command." << std::endl;
+        std::cerr << "Error executing." << std::endl;
+        std::cout << "Going Back to Main Menu..";
+                Sleep(1000);
+        std::cout << "..";
+                Sleep(1000);
+        std::cout << "..";
+                Sleep(1000);
+        std::cout << "..";
+                Sleep(1000);
+        std::cout << "..";
+                Sleep(1000);
+        std::cout << "..";
     }
+    return false;
 }
 
 int isp_block_check(){
@@ -179,42 +216,45 @@ int isp_block_check(){
 
     // Connect to server
     if (connect(sock, (struct sockaddr*) &server, sizeof(server)) == SOCKET_ERROR) {
-        std::cerr << "Port is closed" << std::endl;
+        std::cerr << "Your ISP is Blocking Communication! Applying Bypass" << std::endl;
         isp_unblock_bypass();
         drive_mount();
     } else {
-        std::cout << "Port is open" << std::endl;
+        std::cout << "Your ISP is Allowing Communication! No Bypass Required Mount your Drive" << std::endl;
         closesocket(sock);
         drive_mount();
     }
 }
 
-int mount_network_drive(){}
-
 int main() {
+    
      // Get the handle of the console window
     HWND hwnd = GetConsoleWindow();
     // Set the window title
     SetWindowTextW(hwnd, L"OP Drive Tool by Vrikster");
 
-    std::cout<<"Welcome to the OP Drive Tool Choose from Below Options"<<std::endl;
-    std::cout<<"******************************************************"<<std::endl;
-    std::cout<<"1. Mount OP Drive on your PC"<<std::endl;
-    std::cout<<"2. Revert back all changes made to this pc by the tool (this will also unmount/remove Drive)"<<std::endl;
+    while (true){
+        std::cout<<"Welcome to the OP Drive Tool Choose from Below Options"<<std::endl;
+        std::cout<<"******************************************************"<<std::endl;
+        std::cout<<"1. Mount OP Drive on your PC"<<std::endl;
+        std::cout<<"2. Revert back all changes made to this pc by the tool (this will also unmount/remove Drive)"<<std::endl;
 
-    int selection_option_number{};
-    std::cout<<"Choose your option: ";
-    std::cin>> selection_option_number;
+        int selection_option_number{};
+        std::cout<<"Choose your option: ";
+        std::cin>> selection_option_number;
 
-    if(selection_option_number == 1){
-        isp_block_check();
+        if(selection_option_number == 1){
+            clear_screen();
+            isp_block_check();
+        }
+        else if(selection_option_number == 2){
+            reset_everthing();
+        }
+        else{
+            std::cout<<"Wrong Option chosen"<<std::endl;
+        }
+    std::cin.get(); // Wait for a key press before displaying the menu again
+    clear_screen(); // Clear the screen before displaying the menu again
     }
-    else if(selection_option_number == 2){
-        reset_everthing();
-    }
-    else{
-        std::cout<<"Wrong Option chosen"<<std::endl;
-    }
-
     return 0;
 }
