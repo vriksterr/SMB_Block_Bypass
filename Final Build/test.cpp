@@ -115,6 +115,9 @@ int isp_unblock_bypass(){
             std::cerr << "Failed to execute with administrator privileges." << std::endl;
         }
 }
+
+//to add the option to remove all drives
+//to tell a message to a user weather the reset was successful or not 
 int reset_everthing(){
     // Build the command to run netsh with admin privileges
     const char* command = "cmd.exe /C runas /user:Administrator \"netsh interface portproxy reset\"";
@@ -145,7 +148,7 @@ int drive_mount(){
     // Form the command string
     std::string command = "net use ";
     command += driveLetter;
-    command += ": \\\\127.0.0.1\\opdrive";
+    command += ": \\\\drive.vrikster.com\\opdrive";
 
     // Execute the command
     int result = system(command.c_str());
@@ -239,7 +242,7 @@ int main() {
         std::cout<<"Welcome to the OP Drive Tool Choose from Below Options"<<std::endl;
         std::cout<<"******************************************************"<<std::endl;
         std::cout<<"1. Mount OP Drive on your PC"<<std::endl;
-        std::cout<<"2. Revert back all changes made to this pc by the tool (this will also unmount/remove Drive)"<<std::endl;
+        std::cout<<"2. Revert back all changes made to this pc by the tool (this will also unmount/remove mounted network Drives)"<<std::endl;
 
         int selection_option_number{};
         std::cout<<"Choose your option: ";

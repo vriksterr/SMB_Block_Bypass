@@ -9,7 +9,7 @@ To Fix Issue-
 2) Restart PC
 1) netsh interface portproxy reset
 2) Restart PC
-5) Run EXE + Restar PC (Just in case if it dosent work make sure the definder is disabled)
+5) Run EXE + Restart PC (Just in case if it dosent work make sure the definder is disabled)
 6) Mount your drive
 
 Situation 1:
