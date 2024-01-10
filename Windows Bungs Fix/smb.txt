@@ -1,0 +1,8 @@
+shutdown /r /t 0
+
+netsh interface portproxy show all
+netsh interface portproxy add v4tov4 listenaddress=127.0.0.1 listenport=445 connectaddress=122.176.54.41 connectport=6969
+netsh interface portproxy delete v4tov4 listenaddress=127.0.0.1 listenport=445
+netsh interface portproxy reset
+
+net use Z: \\127.0.0.1\1
