@@ -1,0 +1,25 @@
+Windows 10 (AME):
+
+To Replicate Issue(with or without previously mounted drives)-
+1) run this command in one CMD:(netsh interface portproxy reset) and without closing it run exe and restart by pressing Enter you will have this bug on Windown 10 not able to Replicate it on windows 11 but the FIX works for Both
+
+
+To Fix Issue-
+1) Unmount all network Drives if there are connected  // Only in situation 2
+2) Restart PC
+1) netsh interface portproxy reset
+2) Restart PC
+5) Run EXE + Restart PC (Just in case if it dosent work make sure the definder is disabled)
+6) Mount your drive
+
+Situation 1:
+-No Drives Mounted
+-Exe has already executed its command and have the redirect in place
+
+
+
+
+
+Situation 2:
+-Drive is Mounted
+-Exe has already executed its command and have the redirect in place

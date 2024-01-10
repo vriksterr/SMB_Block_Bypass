@@ -20,7 +20,7 @@ int main() {
     // Reset netsh interface portproxy: netsh interface portproxy reset
 
     // Execute the command with administrator privileges
-    HINSTANCE hInstance = ShellExecuteA(NULL, "runas", "cmd.exe", ("/C " + std::string(command)).c_str(), NULL, SW_HIDE);
+    HINSTANCE hInstance = ShellExecuteA(NULL, "runas", "powershell.exe", ("/C " + std::string(command)).c_str(), NULL, SW_HIDE);
 
     // Check the result of the command execution
     if (reinterpret_cast<std::intptr_t>(hInstance) > 32) {
